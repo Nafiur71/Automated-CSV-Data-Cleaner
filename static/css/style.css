@@ -1,0 +1,105 @@
+/* Custom animations & micro-interactions */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Drag & Drop active styles */
+#dropZone.drag-over {
+  border-color: #6366f1 !important;
+  background-color: #eef2ff !important;
+  transform: scale(1.008);
+}
+
+/* Scrollbar customization */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Missing value badge in table */
+.cell-missing {
+  background-color: #fef2f2;
+  color: #ef4444;
+  font-family: monospace;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  border: 1px dashed #fca5a5;
+  display: inline-block;
+}
+
+/* Validation Error in table */
+.cell-error {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px dashed #f59e0b !important;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.35rem;
+  position: relative;
+}
+
+/* Editable in-browser cell styling */
+.cell-editable {
+  cursor: text;
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+
+.cell-editable:focus {
+  outline: none;
+  background-color: #f0fdf4 !important;
+  box-shadow: inset 0 0 0 2px #22c55e !important;
+}
+
+/* Edited cell indicator */
+.cell-edited {
+  background-color: #f0fdf4 !important;
+  color: #15803d !important;
+  position: relative;
+}
+
+.cell-edited::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 5px;
+  height: 5px;
+  background-color: #22c55e;
+  border-radius: 50%;
+}
+
+/* Clean table row hover */
+#previewTable tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Modal styling */
+.modal-backdrop {
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+}

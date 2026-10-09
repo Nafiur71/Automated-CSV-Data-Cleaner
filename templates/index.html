@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ seo_title or 'CleanCSV - Automated Data Cleaner & Onboarding Platform' }}</title>
+  <meta name="description" content="{{ seo_subtext or 'Transform messy, duplicate-filled, and incomplete datasets into clean, ready-to-use CSV and Excel files instantly. 100% Free up to 64MB.' }}">
+  <meta name="keywords" content="csv cleaner, clean excel online, remove duplicates csv, excel ai cleaner, csv date format converter, clean shopify csv, free data cleaner">
+  <link rel="canonical" href="{{ canonical_url or 'https://cleancsv.app' }}">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ seo_title or 'CleanCSV - Automated Data Cleaner & Onboarding Platform' }}">
+  <meta property="og:description" content="{{ seo_subtext or 'Free AI CSV & Excel data cleaner. Clean messy spreadsheets up to 64MB, edit live on-screen, and export instantly without signup or email.' }}">
+  <meta property="og:url" content="{{ canonical_url or 'https://cleancsv.app' }}">
+  <meta property="og:site_name" content="CleanCSV">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ seo_title or 'CleanCSV - Automated Data Cleaner & Onboarding Platform' }}">
+  <meta name="twitter:description" content="{{ seo_subtext or 'Clean messy CSV and Excel files online. 100% free forever up to 64MB, with live table editing.' }}">
+
+  <!-- Structured Data: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "CleanCSV",
+    "applicationCategory": "BusinessApplication, UtilitiesApplication",
+    "operatingSystem": "Any (Web Browser)",
+    "url": "https://cleancsv.app",
+    "description": "Free AI CSV & Excel data cleaner, normalizer, and duplicate remover. Clean messy spreadsheets up to 64MB, edit live on-screen, and export instantly without account signup or email capture.",
+    "softwareRequirements": "Modern Web Browser (Chrome, Firefox, Safari, Edge)",
+    "featureList": [
+      "100% Free forever with no subscriptions or paywalls",
+      "Upload up to 64MB CSV and Excel files (vs 1MB on CleanMyExcel)",
+      "Zero email required - instant direct downloads",
+      "Interactive in-browser spreadsheet table editor with live cell edits",
+      "One-click 'Issues Only' row filtering and error highlighting",
+      "Automated ISO 8601 YYYY-MM-DD date standardization",
+      "AI fuzzy duplicate clustering and similarity matching",
+      "Flatfile-style smart column schema mapping and renaming",
+      "IQR statistical outlier detection and capping",
+      "Multi-file batch ZIP cleaning"
+    ],
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- Structured Data: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is CleanCSV really 100% free with no hidden limits?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. CleanCSV is 100% free and open for everyone. Unlike competitors like DataSort (capped at 500 rows) or CleanMyExcel (capped at 1MB), CleanCSV supports files up to 64MB with unlimited rows and zero paywalls."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to provide an email address to download my cleaned data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No! Unlike CleanMyExcel which forces you to enter an email address to receive your files, CleanCSV provides instant 1-click downloads directly in your browser. No signups, no spam, no waiting."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I edit cells and fix issues directly on the screen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. CleanCSV provides a built-in editable spreadsheet grid. You can double-click any cell to edit values, filter for 'Issues Only' to spot invalid emails or numbers, and download the exact modified table."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my dataset private and secure?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. All processing occurs in-memory during your session. We do not store, log, or sell your uploaded CSV or Excel files. Once you close the tab, your data is gone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I clean multiple files at once?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! You can select multiple CSV and Excel files simultaneously, clean them in one batch, and download a single organized ZIP bundle with all cleaned files."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen antialiased flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-slate-200/80 bg-white/80 backdrop-blur sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-bold text-lg tracking-tight text-slate-900">Clean<span class="text-indigo-600">CSV</span></span>
+            <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">{{ seo_tag or 'Smart Data Platform' }}</span>
+          </div>
+        </a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/embed-demo" class="hidden sm:inline-block text-xs sm:text-sm font-semibold text-slate-600 hover:text-indigo-600 px-2 py-1 transition">Embed Widget</a>
+        <button id="trySampleBtn" class="text-xs sm:text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50/70 hover:bg-indigo-100/70 transition px-3.5 py-1.5 rounded-lg border border-indigo-100 flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Try Sample Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col gap-8">
+    
+    <!-- Hero Header -->
+    <div class="text-center max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-semibold mb-3 shadow-2xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        100% Free Forever &bull; 64MB Limit &bull; No Email Required
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+        {{ seo_heading or 'Clean messy CSV & Excel data in seconds' }}
+      </h1>
+      <p class="mt-3.5 text-slate-600 text-sm sm:text-base leading-relaxed">
+        {{ seo_subtext or 'Upload CSV or Excel files. Standardize dates, remove duplicates, cap outliers, map columns, and edit cells live on-screen before exporting.' }}
+      </p>
+
+      <!-- Key Feature Badges -->
+      <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mt-5 text-xs font-semibold text-slate-600">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+          <svg class="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Up to 64MB Files (vs 1MB on competitors)
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+          <svg class="w-3.5 h-3.5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Instant 1-Click Download (No Email)
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+          <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Interactive Spreadsheet Grid Editor
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+          <svg class="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          100% In-Memory Privacy
+        </span>
+      </div>
+    </div>
+
+    <!-- Upload & Workspace Card -->
+    <div id="uploadSection" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-8 transition-all">
+      <form id="cleanerForm" class="flex flex-col gap-6">
+        
+        <!-- Drag & Drop Zone (Supports Single or Batch Multi-file) -->
+        <div id="dropZone" class="relative group cursor-pointer border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-xl p-8 sm:p-12 text-center bg-slate-50/60 hover:bg-indigo-50/20 transition duration-200 flex flex-col items-center justify-center">
+          <input type="file" id="fileInput" accept=".csv, .xlsx, .xls" multiple class="hidden">
+          
+          <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-100 transition duration-200 shadow-sm">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          
+          <p class="text-base font-semibold text-slate-800">
+            <span class="text-indigo-600 hover:underline">Click to upload</span> or drag and drop
+          </p>
+          <p class="text-xs text-slate-500 mt-1.5">Supports single files or batch multi-files (CSV, XLSX, XLS) up to 64MB</p>
+
+          <!-- Selected File Badge -->
+          <div id="fileInfoBadge" class="hidden mt-4 inline-flex items-center gap-2 bg-indigo-100/70 border border-indigo-200 text-indigo-900 text-xs sm:text-sm font-medium px-4 py-2 rounded-xl">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span id="fileNameDisplay" class="font-semibold truncate max-w-xs">file.csv</span>
+            <span id="fileSizeDisplay" class="text-indigo-600 font-mono text-xs">0 KB</span>
+            <button type="button" id="removeFileBtn" class="ml-1 text-slate-400 hover:text-rose-600 transition p-0.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Smart Column Mapping Section (Flatfile-Lite) -->
+        <div id="columnMappingSection" class="hidden border border-indigo-100 rounded-xl p-5 bg-indigo-50/30 transition-all">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-600 text-white text-xs font-bold">1</span>
+              <h3 class="text-sm font-bold text-slate-800">Smart Column Mapping &amp; Pruning (Flatfile-Lite)</h3>
+            </div>
+            <span class="text-xs text-indigo-600 font-medium">Rename or exclude columns before cleaning</span>
+          </div>
+
+          <p class="text-xs text-slate-500 mb-4">
+            Match your uploaded headers to clean names, or uncheck columns you don't need in the final dataset:
+          </p>
+
+          <div id="mappingGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <!-- Dynamically populated column cards -->
+          </div>
+        </div>
+
+        <!-- Advanced Cleaning Rules Accordion (Phases 1, 2 & 3) -->
+        <div class="border border-slate-200/80 rounded-xl p-4 bg-slate-50/50">
+          <div class="flex items-center justify-between cursor-pointer select-none" id="toggleOptionsBtn">
+            <div class="flex items-center gap-2 text-sm font-semibold text-slate-800">
+              <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+              <span>Cleaning Rules &amp; AI Assist Strategy</span>
+            </div>
+            <span class="text-xs text-indigo-600 font-medium">Smart Defaults Applied</span>
+          </div>
+
+          <div id="optionsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-200/60 text-xs sm:text-sm">
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Missing Numbers Strategy</label>
+              <select id="numericStrategy" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                <option value="median" selected>Fill with Median (Robust)</option>
+                <option value="mean">Fill with Mean (Average)</option>
+                <option value="zero">Fill with 0 (Zero)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Missing Text Strategy</label>
+              <select id="stringStrategy" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                <option value="unknown" selected>Fill with "Unknown"</option>
+                <option value="mode">Fill with Most Frequent</option>
+                <option value="empty">Leave Empty</option>
+              </select>
+            </div>
+
+            <div class="flex items-center sm:justify-start gap-2.5 pt-6">
+              <input type="checkbox" id="standardizeDates" checked class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+              <label for="standardizeDates" class="font-medium text-slate-700 cursor-pointer">Auto-Format Dates (YYYY-MM-DD)</label>
+            </div>
+
+            <div class="flex items-center sm:justify-start gap-2.5 pt-1">
+              <input type="checkbox" id="dropDuplicates" checked class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+              <label for="dropDuplicates" class="font-medium text-slate-700 cursor-pointer">Remove Duplicate Rows</label>
+            </div>
+
+            <div class="flex items-center sm:justify-start gap-2.5 pt-1">
+              <input type="checkbox" id="trimStrings" checked class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+              <label for="trimStrings" class="font-medium text-slate-700 cursor-pointer">Trim Extra Spaces</label>
+            </div>
+
+            <div class="flex items-center sm:justify-start gap-2.5 pt-1">
+              <input type="checkbox" id="handleOutliers" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+              <label for="handleOutliers" class="font-medium text-slate-700 cursor-pointer">Cap Extreme Outliers (IQR)</label>
+            </div>
+
+            <!-- Phase 3 AI Smart Assist Toggles -->
+            <div class="flex items-center sm:justify-start gap-2.5 pt-1">
+              <input type="checkbox" id="fuzzyClustering" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+              <label for="fuzzyClustering" class="font-medium text-slate-700 cursor-pointer">🤖 AI Fuzzy Category Cluster</label>
+            </div>
+
+            <div class="flex items-center sm:justify-start gap-2.5 pt-1">
+              <input type="checkbox" id="splitNames" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+              <label for="splitNames" class="font-medium text-slate-700 cursor-pointer">👤 AI Split Full Names (First/Last)</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clean Button -->
+        <button type="submit" id="cleanBtn" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold text-sm sm:text-base shadow-lg shadow-indigo-600/20 active:scale-[0.99] transition flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+          <svg class="w-5 h-5 animate-spin hidden" id="spinnerIcon" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          <svg class="w-5 h-5" id="sparkleIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          </svg>
+          <span id="btnText">Clean Dataset Now</span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsSection" class="hidden flex flex-col gap-6 animate-fade-in">
+      
+      <!-- Metrics Banner -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+        
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-sm">
+          <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Original Rows</div>
+          <div id="metricOriginalRows" class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">0</div>
+          <div class="text-xs text-slate-400 mt-1">Loaded rows</div>
+        </div>
+
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-sm">
+          <div class="text-xs font-semibold uppercase tracking-wider text-rose-500">Duplicates Removed</div>
+          <div id="metricDuplicates" class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-1">0</div>
+          <div class="text-xs text-slate-400 mt-1">Purged duplicates</div>
+        </div>
+
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-sm">
+          <div class="text-xs font-semibold uppercase tracking-wider text-amber-500">Values Imputed</div>
+          <div id="metricImputed" class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-1">0</div>
+          <div class="text-xs text-slate-400 mt-1">Missing filled</div>
+        </div>
+
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-sm">
+          <div class="text-xs font-semibold uppercase tracking-wider text-indigo-500">Dates / AI Normalized</div>
+          <div id="metricNormalized" class="text-2xl sm:text-3xl font-extrabold text-indigo-600 mt-1">0</div>
+          <div class="text-xs text-slate-400 mt-1">Standardized</div>
+        </div>
+
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-sm col-span-2 md:col-span-1">
+          <div class="text-xs font-semibold uppercase tracking-wider text-emerald-600">Cleaned Rows</div>
+          <div id="metricFinalRows" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1">0</div>
+          <div class="text-xs text-slate-400 mt-1">Ready for export</div>
+        </div>
+
+      </div>
+
+      <!-- Action Bar: Multi-Format Downloads & Audit Report Trigger -->
+      <div class="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 rounded-2xl p-6 text-white flex flex-col lg:flex-row items-center justify-between gap-5 shadow-xl shadow-slate-900/10">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-lg font-bold">Your dataset has been cleaned successfully!</h2>
+            <span id="healthBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">98% Health Score</span>
+          </div>
+          <p class="text-xs sm:text-sm text-indigo-200 mt-1" id="downloadSubtext">Export clean data in your preferred format or inspect the audit report:</p>
+        </div>
+        
+        <div class="flex items-center gap-2 w-full lg:w-auto flex-wrap sm:flex-nowrap justify-end">
+          <button id="openAuditBtn" class="px-3.5 py-2.5 rounded-xl border border-indigo-400/30 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-200 text-xs sm:text-sm font-semibold transition flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Audit Report
+          </button>
+          
+          <button id="copyClipboardBtn" class="px-3 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 text-slate-300" title="Copy clean CSV to clipboard">
+            <svg class="w-4 h-4" id="copyIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span id="copyText">Copy CSV</span>
+          </button>
+
+          <button id="downloadCsvBtn" class="px-4 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs sm:text-sm font-bold shadow-md shadow-indigo-500/20 transition flex items-center justify-center gap-1.5">
+            CSV
+          </button>
+          
+          <button id="downloadExcelBtn" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-md shadow-emerald-600/20 transition flex items-center justify-center gap-1.5">
+            Excel (.xlsx)
+          </button>
+
+          <button id="downloadJsonBtn" class="px-3.5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs sm:text-sm font-bold shadow-md shadow-violet-600/20 transition flex items-center justify-center gap-1.5">
+            JSON
+          </button>
+
+          <button id="startOverBtn" class="px-3 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-xs sm:text-sm font-semibold transition text-slate-400 hover:text-white" title="Reset and clean another file">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Tabs & Interactive Spreadsheet Toolbar -->
+      <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+        
+        <!-- Tab Bar & Tools -->
+        <div class="border-b border-slate-200 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 bg-slate-50/70">
+          <div class="flex items-center gap-2">
+            <button id="tabCleaned" class="tab-btn active px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-indigo-700 shadow-sm border border-slate-200/80 transition">
+              Cleaned Data (Editable)
+            </button>
+            <button id="tabOriginal" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition">
+              Original Raw Data
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2.5 text-xs">
+            <span class="hidden md:inline-flex items-center gap-1 text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">
+              <span>💡</span> Click any cell to edit live
+            </span>
+            <button id="filterErrorsBtn" class="px-2.5 py-1 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-medium transition flex items-center gap-1">
+              <span>⚠️</span> Issues Only (<span id="errorCountBadge">0</span>)
+            </button>
+            <button id="resetEditsBtn" class="hidden px-2.5 py-1 rounded-md border border-slate-200 bg-white hover:bg-rose-50 text-rose-600 font-medium transition">
+              Reset Edits
+            </button>
+            <span class="text-slate-400 font-mono hidden sm:inline" id="previewRowInfo">Showing rows</span>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="overflow-x-auto max-h-[460px] relative scrollbar-thin">
+          <table class="w-full text-left text-xs sm:text-sm border-collapse" id="previewTable">
+            <thead class="bg-slate-100/90 sticky top-0 border-b border-slate-200 text-slate-700 font-semibold z-10" id="tableHead">
+              <!-- Dynamically populated -->
+            </thead>
+            <tbody class="divide-y divide-slate-100 font-normal" id="tableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Competitor Comparison Section (Why CleanCSV Wins) -->
+    <div class="mt-4 bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-8">
+      <div class="text-center max-w-2xl mx-auto mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">Market Comparison</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Why CleanCSV Beats Other Tools</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Compare CleanCSV with CleanMyExcel, DataSort, and ChatGPT.</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50/75">
+              <th class="py-3 px-4 font-bold text-slate-700">Feature</th>
+              <th class="py-3 px-4 font-bold text-indigo-700 bg-indigo-50/80 rounded-t-lg">CleanCSV (Us)</th>
+              <th class="py-3 px-4 font-semibold text-slate-600">CleanMyExcel.io</th>
+              <th class="py-3 px-4 font-semibold text-slate-600">DataSort.app</th>
+              <th class="py-3 px-4 font-semibold text-slate-600">ChatGPT / Macros</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            <tr>
+              <td class="py-3 px-4 font-semibold text-slate-900">Pricing / Paywalls</td>
+              <td class="py-3 px-4 font-bold text-emerald-600 bg-indigo-50/30">100% Free Forever</td>
+              <td class="py-3 px-4 text-slate-500">Paid Tiers</td>
+              <td class="py-3 px-4 text-slate-500">$2.99 &bull; $12.99 - $39.99/mo</td>
+              <td class="py-3 px-4 text-slate-500">$20/mo Plus</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-slate-900">Maximum File Size</td>
+              <td class="py-3 px-4 font-bold text-emerald-600 bg-indigo-50/30">64 MB Free</td>
+              <td class="py-3 px-4 text-rose-500 font-medium">1 MB Limit</td>
+              <td class="py-3 px-4 text-rose-500 font-medium">500 Rows (Free)</td>
+              <td class="py-3 px-4 text-slate-500">Token limit (~500 rows)</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-slate-900">Instant Download (No Email)</td>
+              <td class="py-3 px-4 font-bold text-emerald-600 bg-indigo-50/30">Yes (Direct 1-Click)</td>
+              <td class="py-3 px-4 text-rose-500 font-medium">No (Requires Email)</td>
+              <td class="py-3 px-4 text-emerald-600">Yes</td>
+              <td class="py-3 px-4 text-slate-500">Copy paste required</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-slate-900">In-Browser Live Grid Editor</td>
+              <td class="py-3 px-4 font-bold text-emerald-600 bg-indigo-50/30">Yes (Click & Edit)</td>
+              <td class="py-3 px-4 text-slate-400">No (Download only)</td>
+              <td class="py-3 px-4 text-emerald-600">Basic Grid</td>
+              <td class="py-3 px-4 text-slate-400">No</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-slate-900">Filter "Issues Only"</td>
+              <td class="py-3 px-4 font-bold text-emerald-600 bg-indigo-50/30">Yes (1-Click Toggle)</td>
+              <td class="py-3 px-4 text-slate-400">No</td>
+              <td class="py-3 px-4 text-slate-400">No</td>
+              <td class="py-3 px-4 text-slate-400">No</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-slate-900">Smart Schema Mapping</td>
+              <td class="py-3 px-4 font-bold text-emerald-600 bg-indigo-50/30">Yes (Flatfile-Lite)</td>
+              <td class="py-3 px-4 text-slate-400">No</td>
+              <td class="py-3 px-4 text-slate-500">Multi-step Merge</td>
+              <td class="py-3 px-4 text-slate-400">Manual Prompts</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-slate-900">Batch ZIP Cleaning</td>
+              <td class="py-3 px-4 font-bold text-emerald-600 bg-indigo-50/30">Yes (Multi-file Free)</td>
+              <td class="py-3 px-4 text-slate-400">No</td>
+              <td class="py-3 px-4 text-slate-400">Paid Plans Only</td>
+              <td class="py-3 px-4 text-slate-400">No</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-slate-900">Data Privacy</td>
+              <td class="py-3 px-4 font-bold text-emerald-600 bg-indigo-50/30">100% In-Memory Safe</td>
+              <td class="py-3 px-4 text-slate-500">Cloud Storage</td>
+              <td class="py-3 px-4 text-slate-500">IndexedDB & Server</td>
+              <td class="py-3 px-4 text-rose-500 font-medium">Trained on Data (unless opted out)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Interactive FAQ Section (Matches JSON-LD FAQ Schema for Google Ranking) -->
+    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-8">
+      <div class="text-center max-w-2xl mx-auto mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">Frequently Asked Questions</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Everything You Need to Know</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Learn why thousands of analysts and teams trust CleanCSV.</p>
+      </div>
+
+      <div class="flex flex-col divide-y divide-slate-100 max-w-4xl mx-auto">
+        <details class="group py-4 cursor-pointer" open>
+          <summary class="flex justify-between items-center font-bold text-slate-900 text-sm sm:text-base group-hover:text-indigo-600 transition">
+            Is CleanCSV really 100% free with no hidden limits?
+            <span class="text-indigo-500 group-open:rotate-180 transition-transform font-bold">&darr;</span>
+          </summary>
+          <p class="text-slate-600 text-xs sm:text-sm mt-2.5 leading-relaxed">
+            Yes! CleanCSV is 100% free with zero paywalls, zero subscriptions, and zero limits. While competitors like DataSort cap free users at 500 rows and CleanMyExcel restricts uploads to 1MB, CleanCSV lets you clean large datasets up to 64MB without paying a cent.
+          </p>
+        </details>
+
+        <details class="group py-4 cursor-pointer">
+          <summary class="flex justify-between items-center font-bold text-slate-900 text-sm sm:text-base group-hover:text-indigo-600 transition">
+            Do I need to enter an email address to download my cleaned data?
+            <span class="text-indigo-500 group-open:rotate-180 transition-transform font-bold">&darr;</span>
+          </summary>
+          <p class="text-slate-600 text-xs sm:text-sm mt-2.5 leading-relaxed">
+            Never. Unlike CleanMyExcel which holds your file hostage behind an email form, CleanCSV gives you instant 1-click downloads directly in your browser. Download in CSV, Excel (.xlsx), or JSON instantly.
+          </p>
+        </details>
+
+        <details class="group py-4 cursor-pointer">
+          <summary class="flex justify-between items-center font-bold text-slate-900 text-sm sm:text-base group-hover:text-indigo-600 transition">
+            Can I edit cells directly before exporting?
+            <span class="text-indigo-500 group-open:rotate-180 transition-transform font-bold">&darr;</span>
+          </summary>
+          <p class="text-slate-600 text-xs sm:text-sm mt-2.5 leading-relaxed">
+            Yes. CleanCSV features an Excel-like interactive spreadsheet grid. You can double click any cell to edit it, use the "⚠️ Issues Only" filter to pinpoint flawed rows, and export your exact edits in real-time.
+          </p>
+        </details>
+
+        <details class="group py-4 cursor-pointer">
+          <summary class="flex justify-between items-center font-bold text-slate-900 text-sm sm:text-base group-hover:text-indigo-600 transition">
+            How is my data kept safe and private?
+            <span class="text-indigo-500 group-open:rotate-180 transition-transform font-bold">&darr;</span>
+          </summary>
+          <p class="text-slate-600 text-xs sm:text-sm mt-2.5 leading-relaxed">
+            CleanCSV processes all uploaded files in-memory using stateless Python &amp; Pandas engines. Files are never stored in a database or retained on our server. As soon as your download completes, the memory buffer is cleared.
+          </p>
+        </details>
+
+        <details class="group py-4 cursor-pointer">
+          <summary class="flex justify-between items-center font-bold text-slate-900 text-sm sm:text-base group-hover:text-indigo-600 transition">
+            How does the AI fuzzy duplicate clustering work?
+            <span class="text-indigo-500 group-open:rotate-180 transition-transform font-bold">&darr;</span>
+          </summary>
+          <p class="text-slate-600 text-xs sm:text-sm mt-2.5 leading-relaxed">
+            Standard tools only remove exact row duplicates. CleanCSV's AI fuzzy clustering analyzes text similarity across category columns (e.g. matching "United States", "USA", "United States of America") to eliminate near-duplicates and standardize variations.
+          </p>
+        </details>
+
+        <details class="group py-4 cursor-pointer">
+          <summary class="flex justify-between items-center font-bold text-slate-900 text-sm sm:text-base group-hover:text-indigo-600 transition">
+            Can I batch clean multiple CSV and Excel files at once?
+            <span class="text-indigo-500 group-open:rotate-180 transition-transform font-bold">&darr;</span>
+          </summary>
+          <p class="text-slate-600 text-xs sm:text-sm mt-2.5 leading-relaxed">
+            Yes! Simply drag and drop or select multiple files in the upload box. CleanCSV will process all files in parallel and download a neat ZIP archive containing every cleaned CSV or Excel file.
+          </p>
+        </details>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Data Profiling & Audit Report Modal (Phase 2) -->
+  <div id="auditModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+    <div class="bg-white rounded-3xl max-w-3xl w-full border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">Comprehensive Data Quality &amp; Audit Report</h3>
+            <p class="text-xs text-slate-500">Automated profiling generated before and after cleaning</p>
+          </div>
+        </div>
+        <button id="closeAuditModalBtn" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto flex flex-col gap-6 scrollbar-thin">
+        
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-4 text-center">
+            <div class="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Health Score</div>
+            <div id="modalHealthScore" class="text-3xl font-extrabold text-indigo-700 mt-1">100%</div>
+            <div class="text-xs text-indigo-500/80 mt-0.5">High Quality</div>
+          </div>
+          <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Memory Reduction</div>
+            <div id="modalMemoryReduction" class="text-3xl font-extrabold text-slate-800 mt-1">0%</div>
+            <div class="text-xs text-slate-400 mt-0.5" id="modalMemoryDetails">0 KB saved</div>
+          </div>
+          <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dimensions</div>
+            <div id="modalDimensions" class="text-3xl font-extrabold text-slate-800 mt-1">0 &times; 0</div>
+            <div class="text-xs text-slate-400 mt-0.5">Rows &times; Columns</div>
+          </div>
+        </div>
+
+        <!-- Column Profiles Table -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Column-by-Column Profiling Breakdown</h4>
+          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="py-2.5 px-3">Column</th>
+                  <th class="py-2.5 px-3">Inferred Type</th>
+                  <th class="py-2.5 px-3">Missing %</th>
+                  <th class="py-2.5 px-3">Unique Values</th>
+                  <th class="py-2.5 px-3">Min / Max Range</th>
+                </tr>
+              </thead>
+              <tbody id="modalColumnsTable" class="divide-y divide-slate-100">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 border-t border-slate-200 bg-slate-50/70 flex items-center justify-between">
+        <span class="text-xs text-slate-400">Processed in-memory &bull; Zero data stored on server</span>
+        <button id="closeAuditModalBtn2" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold transition">
+          Close Report
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer with Programmatic SEO Links -->
+  <footer class="border-t border-slate-200/70 bg-white py-8 mt-12 text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col gap-6">
+      
+      <!-- SEO Directory Links -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs border-b border-slate-100 pb-6">
+        <div class="flex flex-col gap-1.5">
+          <span class="font-bold text-slate-700">Flagship Cleaners</span>
+          <a href="/excel-cleaner" class="hover:text-indigo-600 transition">Excel (.xlsx) Cleaner</a>
+          <a href="/csv-cleaner" class="hover:text-indigo-600 transition">CSV Data Cleaner</a>
+          <a href="/remove-csv-duplicates-online" class="hover:text-indigo-600 transition">Remove CSV Duplicates</a>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <span class="font-bold text-slate-700">Converters &amp; Niches</span>
+          <a href="/convert-excel-to-clean-csv" class="hover:text-indigo-600 transition">Excel to Clean CSV</a>
+          <a href="/fix-csv-date-format-online" class="hover:text-indigo-600 transition">Standardize Dates</a>
+          <a href="/clean-shopify-csv" class="hover:text-indigo-600 transition">Shopify CSV Cleaner</a>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <span class="font-bold text-slate-700">For Developers</span>
+          <a href="/embed-demo" class="hover:text-indigo-600 transition">Embeddable Widget</a>
+          <a href="/embed.js" target="_blank" class="hover:text-indigo-600 transition">widget.js API</a>
+          <a href="/sitemap.xml" target="_blank" class="hover:text-indigo-600 transition">sitemap.xml</a>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <span class="font-bold text-slate-700">Privacy &amp; Open Policy</span>
+          <span class="text-emerald-600 font-semibold">100% Free &amp; Unlimited</span>
+          <span class="text-slate-400">Zero Server Retention</span>
+          <span class="text-slate-400">Max 64MB File Limit</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p>CleanCSV &bull; Built with Python, Flask &amp; Pandas for Web Development &amp; AI</p>
+        <p class="text-slate-400">In-Memory Privacy Safe &bull; Zero Server Retention</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
